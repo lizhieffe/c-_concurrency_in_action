@@ -84,5 +84,8 @@ int main() {
 
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
+  std::cout << "Hardware concurrency number = " 
+            << std::thread::hardware_concurrency() << std::endl;
+
   return 0;
 }
