@@ -4,3 +4,9 @@
 *.o
 
 *.out
+
+CMakeCache.txt
+
+CMakeFiles/
+
+*.cmake
