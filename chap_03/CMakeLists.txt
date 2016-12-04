@@ -14,5 +14,7 @@ find_package (Threads)
 add_executable(${PROJECT} ${DIR_SRCS})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+# Generate extra compilation info used by YCM.
+set( CMAKE_EXPORT_COMPILE_COMMANDS 1 )
 
 target_link_libraries (${PROJECT} pthread)
