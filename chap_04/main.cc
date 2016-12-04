@@ -6,6 +6,8 @@
 #include <mutex>
 #include <thread>
 
+#include "threadsafe_queue.h"
+
 std::list<int> data_list;
 
 std::mutex lock;
@@ -57,4 +59,28 @@ int main() {
   std::thread data_processing_thread(DataProcessingThread);
   data_preparation_thread.join();
   data_processing_thread.join();
+
+  // 4.1.2
+  std::cout << std::endl;
+  ThreadsafeQueue<int> threadsafe_queue;
+  int value;
+  assert(threadsafe_queue.Empty());  
+  assert(threadsafe_queue.TryPop(&value) == false);
+  assert(threadsafe_queue.TryPop() == nullptr);
+  threadsafe_queue.Push(3);
+  assert(*threadsafe_queue.TryPop() == 3);
+  std::thread threadsafe_queue_data_push_thread([&threadsafe_queue]() {
+      for (int i = 0; i < 10; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        threadsafe_queue.Push(i);
+      }
+      });
+  std::thread threadsafe_queue_data_pop_thread([&threadsafe_queue]() {
+      for (int i = 0; i < 10; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        assert(*threadsafe_queue.WaitAndPop() == i);
+      }
+      });
+  threadsafe_queue_data_push_thread.join();
+  threadsafe_queue_data_pop_thread.join();
 }
