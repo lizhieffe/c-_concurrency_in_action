@@ -6,6 +6,8 @@
 #include <mutex>
 #include <thread>
 
+#include "4_2_1.h"
+#include "4_2_2.h"
 #include "threadsafe_queue.h"
 
 std::list<int> data_list;
@@ -83,4 +85,20 @@ int main() {
       });
   threadsafe_queue_data_push_thread.join();
   threadsafe_queue_data_pop_thread.join();
+
+  // 4.2.1
+  std::cout << std::endl;
+  X x;
+  auto future_1 = std::async(&X::foo, &x, 42, "hello"); 
+  auto future_2 = std::async(&X::bar, x, "goodbye");
+  future_1.get();
+  std::cout << "future_2 get is: " << future_2.get() << std::endl;
+  auto future_3 = std::async(Y(), 3);
+  Y y;
+  auto future_4 = std::async(std::ref(y), 4);
+  std::cout << "future_3 get is: " << future_3.get() << std::endl;
+  std::cout << "future_4 get is: " << future_4.get() << std::endl;
+
+  // 4.2.2
+  Run422();
 }
